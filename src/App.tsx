@@ -3,6 +3,15 @@ import "./App.less";
 import { Card, Tabs, Upload, UploadFile } from "antd";
 import { PlusOutlined, SaveOutlined } from "@ant-design/icons";
 import { Preview } from "./Preview";
+import { ItemRender } from "antd/lib/upload/interface";
+
+const picRenderer: ItemRender = (originNode, file, fileList, actions) => {
+    return <img className="ant-upload-list-item" src={file.thumbUrl} onClick={e => {
+        e.preventDefault();
+        e.stopPropagation();
+        actions.remove();
+    }}/>;
+};
 
 function Feature({ type }: { type: "health" | "travel" }) {
     const [fileList, setFileList] = useState<UploadFile[]>([]);
@@ -27,12 +36,13 @@ function Feature({ type }: { type: "health" | "travel" }) {
             listType="picture-card"
             fileList={fileList}
             beforeUpload={() => false}
-            onChange={({ fileList }) => {
-                // setLoading(true);
-                setFileList(fileList);
+            itemRender={picRenderer}
+            onChange={({ fileList: files }) => {
+                setLoading(true);
+                setFileList(files);
             }}
         >
-            <div onClick={() => setLoading(true)}>
+            <div>
                 <PlusOutlined style={{ fontSize: "2em", color: "lightgrey" }}/>
             </div>
         </Upload>
